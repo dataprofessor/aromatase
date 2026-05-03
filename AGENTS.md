@@ -292,6 +292,7 @@ Working set has already been initialized!
 
 **Context**: Occurs on multiple fingerprints with `cuSVR(kernel='linear')` during 10-fold cross-validation:
 - `klekota_roth_count` (515 features, 3022 samples) — random split
+- `klekota_roth_count` (515 features, 3022 samples) — kennard_stone split
 - `atompairs2d_count` (226 features, 3022 samples) — random split
 - `atompairs2d_count` (226 features, 3022 samples) — kennard_stone split
 
