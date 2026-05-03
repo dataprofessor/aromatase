@@ -4,3 +4,7 @@ scipy==1.15.2
 scikit-learn==1.6.1
 xgboost==3.0.1
 rdkit==2024.09.6
+padelpy==0.1.16
+matplotlib==3.10.0
+seaborn==0.13.2
+tqdm==4.67.1
