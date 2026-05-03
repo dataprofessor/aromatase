@@ -291,8 +291,9 @@ Working set has already been initialized!
 ```
 
 **Context**: Occurs on multiple fingerprints with `cuSVR(kernel='linear')` during 10-fold cross-validation:
-- `klekota_roth_count` (515 features, 3022 samples)
-- `atompairs2d_count` (226 features, 3022 samples)
+- `klekota_roth_count` (515 features, 3022 samples) — random split
+- `atompairs2d_count` (226 features, 3022 samples) — random split
+- `atompairs2d_count` (226 features, 3022 samples) — kennard_stone split
 
 The error originates in cuML's C++ SMO solver (`SmoSolver::Solve` → `KernelCache::InitWorkingSet`). Likely a cuML bug with the working set initialization being called twice on linear SVR. Affects count-based fingerprints more frequently than binary fingerprints.
 
