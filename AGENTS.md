@@ -279,3 +279,22 @@ Key findings for anyone porting these fingerprints to pure Python:
 - **SubstructureFP**: 306/307 SMARTS patterns parse in RDKit (bit 298 "Salt" needs a custom formal-charge check). However, ~10 bits consistently disagree due to aromaticity: tautomerizable groups (bits 300-301), annelated/bridged rings (279-280), oxoarene (177), CH-acidic (304-305), and cis/trans double bonds (289-290).
 - **SMARTS patterns source**: CDK's `SMARTS_InteLigand.txt` (307 patterns, LGPL, by Christian Laggner/Inte:Ligand). A copy is stored in `scripts/data/smarts_substructure.txt`.
 - **Performance target**: Native RDKit SMARTS matching runs at ~5 ms/mol (vs ~22 ms/mol PaDEL), so a ~4x speedup is achievable if the aromaticity differences are acceptable or can be resolved.
+
+## Known Issues
+
+### cuML SVR (Linear) crash on high-dimensional data
+
+**Error**: `klekota_roth_count/random/SVR (Linear)` — cuML's SVR with `kernel='linear'` crashes with:
+```
+exception occurred! file=/__w/cuml/cuml/cpp/src/svm/kernelcache.cuh line=487:
+Working set has already been initialized!
+```
+
+**Context**: Occurs on `klekota_roth_count` fingerprint (515 features, 3022 samples) during 10-fold cross-validation. The error originates in cuML's C++ SMO solver (`SmoSolver::Solve` → `KernelCache::InitWorkingSet`). Likely a cuML bug with the working set initialization being called twice on linear SVR with high-dimensional input.
+
+**Workaround**: The notebook's error handling (`try/except`) catches and skips this model/fingerprint combination. Results for other fingerprints and SVR (RBF) are unaffected.
+
+**Future fix options**:
+1. Fall back to sklearn's `SVR(kernel='linear')` for fingerprints with >400 features
+2. Replace `cuSVR(kernel='linear')` with `cuml.linear_model.LinearSVR` (different solver, avoids the SMO path)
+3. Wait for cuML upstream fix (file issue at github.com/rapidsai/cuml)
