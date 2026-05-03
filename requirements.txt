@@ -1,0 +1,6 @@
+numpy==2.2.3
+pandas==2.2.3
+scipy==1.15.2
+scikit-learn==1.6.1
+xgboost==3.0.1
+rdkit==2024.09.6

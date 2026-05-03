@@ -1,0 +1,21 @@
+"""Aromatase (CYP19A1) Bioactivity EDA — Multi-page Streamlit app."""
+
+import streamlit as st
+
+st.set_page_config(
+    page_title="Aromatase EDA",
+    page_icon=":material/science:",
+    layout="wide",
+)
+
+page = st.navigation(
+    [
+        st.Page("app_pages/overview.py", title="Overview", icon=":material/dashboard:"),
+        st.Page("app_pages/potency.py", title="Potency analysis", icon=":material/bar_chart:"),
+        st.Page("app_pages/chemical_space.py", title="Chemical space", icon=":material/hexagon:"),
+        st.Page("app_pages/temporal.py", title="Temporal & assays", icon=":material/calendar_today:"),
+    ],
+    position="top",
+)
+
+page.run()
