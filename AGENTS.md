@@ -290,7 +290,11 @@ exception occurred! file=/__w/cuml/cuml/cpp/src/svm/kernelcache.cuh line=487:
 Working set has already been initialized!
 ```
 
-**Context**: Occurs on `klekota_roth_count` fingerprint (515 features, 3022 samples) during 10-fold cross-validation. The error originates in cuML's C++ SMO solver (`SmoSolver::Solve` → `KernelCache::InitWorkingSet`). Likely a cuML bug with the working set initialization being called twice on linear SVR with high-dimensional input.
+**Context**: Occurs on multiple fingerprints with `cuSVR(kernel='linear')` during 10-fold cross-validation:
+- `klekota_roth_count` (515 features, 3022 samples)
+- `atompairs2d_count` (226 features, 3022 samples)
+
+The error originates in cuML's C++ SMO solver (`SmoSolver::Solve` → `KernelCache::InitWorkingSet`). Likely a cuML bug with the working set initialization being called twice on linear SVR. Affects count-based fingerprints more frequently than binary fingerprints.
 
 **Workaround**: The notebook's error handling (`try/except`) catches and skips this model/fingerprint combination. Results for other fingerprints and SVR (RBF) are unaffected.
 
