@@ -13,6 +13,7 @@ Bioactivity prediction for human **Aromatase** (CYP19A1) using molecular fingerp
 | 5 | `05_remove_near_constant_fp.py` | Remove low-variance features (SD < 0.1) |
 | 6 | `06_split_data.py` | Train/test split (random + Kennard-Stone) |
 | 7 | `07_build_models.py` | Train 14 regression models per fingerprint |
+| 7 | `07_build_models_colab.ipynb` | GPU-accelerated model building (Colab) |
 
 ## Fingerprints (12 types)
 
