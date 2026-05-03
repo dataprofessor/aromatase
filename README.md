@@ -36,7 +36,7 @@ Uses cuML (GPU) for Ridge, Lasso, ElasticNet, KNN, SVR, Random Forest and XGBoos
 ## Requirements
 
 ```
-numpy, pandas, scipy, scikit-learn, xgboost, rdkit
+numpy, pandas, scipy, scikit-learn, xgboost, rdkit, padelpy, matplotlib, seaborn, tqdm
 ```
 
-PaDEL-Descriptor (Java) required for fingerprint computation steps only.
+PaDEL-Descriptor (Java) required for fingerprint computation scripts (steps 04). The Colab notebook additionally installs `cuml-cu12` and `cudf-cu12` for GPU acceleration.
