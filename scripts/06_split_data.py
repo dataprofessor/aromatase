@@ -9,7 +9,7 @@ data leakage (all rows for a given molecule go to the same set):
      by iteratively selecting the most distant molecule from the current
      training pool
 
-Reads from data/fingerprints_filtered/ and writes to data/splits/.
+Reads from data/fingerprints_decorrelated/ and writes to data/splits/.
 
 Usage:
     python scripts/06_split_data.py                 # all fingerprints
@@ -25,7 +25,7 @@ import sys
 import numpy as np
 
 _DIR = os.path.dirname(__file__)
-INPUT_DIR = os.path.join(_DIR, "..", "data", "fingerprints_filtered")
+INPUT_DIR = os.path.join(_DIR, "..", "data", "fingerprints_decorrelated")
 OUTPUT_DIR = os.path.join(_DIR, "..", "data", "splits")
 TRAIN_RATIO = 0.8
 RANDOM_SEED = 42
@@ -140,7 +140,7 @@ def write_split(rows, fieldnames, mol_set, output_path):
 def process_fingerprint(input_path, output_dir):
     """Run both split strategies on a single fingerprint file."""
     basename = os.path.basename(input_path)
-    stem = basename.replace("_filtered.csv", "")
+    stem = basename.replace("_decorrelated.csv", "")
     print(f"\n{'='*60}")
     print(f"Processing: {basename}")
     print(f"{'='*60}")
@@ -205,7 +205,7 @@ def main():
 
     # Collect filtered fingerprint files
     all_fps = sorted(
-        f for f in os.listdir(INPUT_DIR) if f.endswith("_filtered.csv")
+        f for f in os.listdir(INPUT_DIR) if f.endswith("_decorrelated.csv")
     )
 
     # Filter by name if arguments given
@@ -242,7 +242,7 @@ def main():
     print(f"\n  {'Fingerprint':<50} {'Molecules':>10} {'Train':>7} {'Test':>6}")
     print(f"  {'-'*50} {'-'*10} {'-'*7} {'-'*6}")
     for r in results:
-        name = r["name"].replace("aromatase_", "").replace("_fp_filtered.csv", "")
+        name = r["name"].replace("aromatase_", "").replace("_fp_decorrelated.csv", "")
         print(f"  {name:<50} {r['n_molecules']:>10} {r['n_train_mol']:>7} {r['n_test_mol']:>6}")
 
 

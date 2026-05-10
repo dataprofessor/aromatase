@@ -304,3 +304,11 @@ The error originates in cuML's C++ SMO solver (`SmoSolver::Solve` → `KernelCac
 1. Fall back to sklearn's `SVR(kernel='linear')` for fingerprints with >400 features
 2. Replace `cuSVR(kernel='linear')` with `cuml.linear_model.LinearSVR` (different solver, avoids the SMO path)
 3. Wait for cuML upstream fix (file issue at github.com/rapidsai/cuml)
+
+## To-Do
+
+1. **Run regression/classification models with collinear-removed data** — Re-run both the regression (`07_build_models_colab.ipynb`) and classification (`08_build_classification_models_colab.ipynb`) notebooks using the fingerprint data after removing highly collinear features. Compare performance to the full-feature models.
+
+2. **Feature importance analysis** — Identify the most predictive fingerprint bits/features for aromatase inhibition. Use permutation importance, SHAP values, or model-native feature importances (Random Forest, XGBoost) to rank descriptors across fingerprint types.
+
+3. **Statistical comparison of bioactivity classes** — Perform statistical tests (e.g., Kruskal-Wallis, Mann-Whitney U with Bonferroni correction) to compare molecular descriptor distributions across the 3 bioactivity classes (active, intermediate, inactive). Identify which descriptors significantly differentiate the classes.
