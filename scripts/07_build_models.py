@@ -117,7 +117,12 @@ def get_models():
     from sklearn.neural_network import MLPRegressor
     from sklearn.gaussian_process import GaussianProcessRegressor
     from sklearn.cross_decomposition import PLSRegression
-    from xgboost import XGBRegressor
+    try:
+        from xgboost import XGBRegressor
+        HAS_XGBOOST = True
+    except Exception:
+        HAS_XGBOOST = False
+        XGBRegressor = None
 
     models = [
         ("Ridge Regression", Ridge(alpha=1.0, solver="svd")),
@@ -136,10 +141,13 @@ def get_models():
         ("Gradient Boosting", GradientBoostingRegressor(
             n_estimators=100, random_state=RANDOM_STATE
         )),
-        ("XGBoost", XGBRegressor(
+    ]
+    if HAS_XGBOOST:
+        models.append(("XGBoost", XGBRegressor(
             n_estimators=500, random_state=RANDOM_STATE, n_jobs=2,
             verbosity=0
-        )),
+        )))
+    models += [
         ("AdaBoost", AdaBoostRegressor(
             n_estimators=500, random_state=RANDOM_STATE
         )),
@@ -288,8 +296,16 @@ def main():
 
         # 10-fold cross-validation on training set
         from sklearn.base import clone
-        model_cv = clone(model)
-        y_pred_cv = cross_val_predict(model_cv, X_train, y_train, cv=cv, n_jobs=1)
+        if name == "XGBoost":
+            # Manual CV for XGBoost (sklearn tag incompatibility with xgboost 1.x)
+            y_pred_cv = np.zeros_like(y_train)
+            for tr_idx, val_idx in cv.split(X_train):
+                m_cv = type(model)(**model.get_params())
+                m_cv.fit(X_train[tr_idx], y_train[tr_idx])
+                y_pred_cv[val_idx] = m_cv.predict(X_train[val_idx])
+        else:
+            model_cv = clone(model)
+            y_pred_cv = cross_val_predict(model_cv, X_train, y_train, cv=cv, n_jobs=1)
         if y_pred_cv.ndim > 1:
             y_pred_cv = y_pred_cv.ravel()
 

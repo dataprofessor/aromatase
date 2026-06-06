@@ -10,43 +10,62 @@ Bioactivity data for the human **Aromatase** (CYP19A1) protein target, retrieved
 aromatase/
 ├── AGENTS.md
 ├── scripts/
-│   ├── 01_fetch_aromatase_bioactivity.py  # Step 1: Fetch from ChEMBL API
-│   ├── 02_clean_aromatase_bioactivity.py  # Step 2: Deduplicate + InChIKeys
-│   ├── 03_eda_aromatase.py                # Step 3: Exploratory data analysis
-│   ├── 04_compute_maccs_fp.py             # Step 4: MACCS keys (166 bits)
-│   ├── 04_compute_pubchem_fp.py           # Step 4: PubChem FP (881 bits)
-│   ├── 04_compute_substructure_fp.py      # Step 4: SubstructureFP (307 bits)
-│   ├── 04_compute_klekota_roth_fp.py      # Step 4: Klekota-Roth FP (4860 bits)
-│   ├── 04_compute_cdk_fp.py              # Step 4: CDK Fingerprinter (1024 bits)
-│   ├── 04_compute_cdk_ext_fp.py          # Step 4: CDK Extended FP (1024 bits)
-│   ├── 04_compute_cdk_graphonly_fp.py     # Step 4: CDK GraphOnly FP (1024 bits)
-│   ├── 04_compute_estate_fp.py           # Step 4: E-State FP (79 bits)
-│   ├── 04_compute_atompairs2d_fp.py      # Step 4: AtomPairs2D FP (780 bits)
-│   ├── 04_compute_substructure_count_fp.py  # Step 4: Substructure Count (307 counts)
-│   ├── 04_compute_klekota_roth_count_fp.py  # Step 4: Klekota-Roth Count (4860 counts)
-│   ├── 04_compute_atompairs2d_count_fp.py   # Step 4: AtomPairs2D Count (780 counts)
-│   ├── 04_compute_ecfp4.py               # Step 4: ECFP4 (1024 bits, optional)
+│   ├── 01_fetch_aromatase_bioactivity.py      # Step 1: Fetch from ChEMBL API
+│   ├── 02_clean_aromatase_bioactivity.py      # Step 2: Deduplicate + InChIKeys
+│   ├── 03_eda_aromatase.py                    # Step 3: Exploratory data analysis
+│   ├── 04_compute_maccs_fp.py                 # Step 4: MACCS keys (166 bits)
+│   ├── 04_compute_pubchem_fp.py               # Step 4: PubChem FP (881 bits)
+│   ├── 04_compute_substructure_fp.py          # Step 4: SubstructureFP (307 bits)
+│   ├── 04_compute_klekota_roth_fp.py          # Step 4: Klekota-Roth FP (4860 bits)
+│   ├── 04_compute_cdk_fp.py                   # Step 4: CDK Fingerprinter (1024 bits)
+│   ├── 04_compute_cdk_ext_fp.py               # Step 4: CDK Extended FP (1024 bits)
+│   ├── 04_compute_cdk_graphonly_fp.py          # Step 4: CDK GraphOnly FP (1024 bits)
+│   ├── 04_compute_estate_fp.py                # Step 4: E-State FP (79 bits)
+│   ├── 04_compute_atompairs2d_fp.py           # Step 4: AtomPairs2D FP (780 bits)
+│   ├── 04_compute_substructure_count_fp.py    # Step 4: Substructure Count (307 counts)
+│   ├── 04_compute_klekota_roth_count_fp.py    # Step 4: Klekota-Roth Count (4860 counts)
+│   ├── 04_compute_atompairs2d_count_fp.py     # Step 4: AtomPairs2D Count (780 counts)
+│   ├── 04_compute_ecfp4.py                    # Step 4: ECFP4 (1024 bits, optional)
+│   ├── 05_remove_near_constant_fp.py          # Step 5: Remove near-constant features (SD < 0.1)
+│   ├── 05b_remove_collinear_fp.py             # Step 5b: Remove collinear features (|r| >= 0.90)
+│   ├── 06_split_data.py                       # Step 6: Train/test split (random + Kennard-Stone)
+│   ├── 07_build_models.py                     # Step 7: Regression models (CLI)
+│   ├── 07b_build_models.py                    # Step 7b: Regression models on decorrelated FPs (CLI)
+│   ├── 08c_build_classification_models.py     # Step 8c: Classification models (CLI, 3-tier)
+│   ├── 08d_build_classification_models.py     # Step 8d: Classification on decorrelated FPs (CLI, 3-tier)
 │   └── data/
-│       └── smarts_substructure.txt      # 307 SMARTS patterns (CDK/Inte:Ligand)
+│       └── smarts_substructure.txt            # 307 SMARTS patterns (CDK/Inte:Ligand)
+├── notebooks/
+│   ├── 03_eda_aromatase.ipynb                 # EDA notebook
+│   ├── 06_split_visualization.ipynb           # Train/test split visualization
+│   ├── 07_build_models_colab.ipynb            # Regression (Colab GPU, original FPs)
+│   ├── 07b_build_models_decorrelated_colab.ipynb  # Regression (Colab GPU, decorrelated FPs)
+│   ├── 08_build_classification_models_colab.ipynb  # Classification (Colab GPU, original FPs)
+│   ├── 08b_build_classification_models_decorrelated_colab.ipynb  # Classification (decorrelated)
+│   ├── 08c_build_classification_models_colab.ipynb  # Classification 3-tier (original)
+│   └── 08d_build_classification_models_decorrelated_colab.ipynb  # Classification 3-tier (decorrelated)
+├── streamlit_app/
+│   ├── streamlit_app.py                       # Main Streamlit app
+│   ├── data_utils.py                          # Data loading utilities
+│   └── app_pages/                             # Page modules (overview, chemical_space, etc.)
 ├── data/
 │   ├── raw/
-│   │   └── aromatase_bioactivity.csv            # 5,097 rows, 17 cols
+│   │   └── aromatase_bioactivity.csv                    # 5,097 rows, 17 cols
 │   ├── processed/
-│   │   ├── aromatase_bioactivity_clean.csv      # 3,774 rows, 19 cols
-│   │   └── aromatase_bioactivity_curated.csv    # 3,774 rows, 19 cols
-│   └── fingerprints/
-│       ├── aromatase_maccs_fp.csv               # 3,774 rows, 167 cols
-│       ├── aromatase_pubchem_fp.csv             # 3,774 rows, 882 cols
-│       ├── aromatase_substructure_fp.csv        # 3,774 rows, 308 cols
-│       ├── aromatase_klekota_roth_fp.csv       # 3,774 rows, 4861 cols
-│       ├── aromatase_cdk_fp.csv                # 3,774 rows, 1025 cols
-│       ├── aromatase_cdk_ext_fp.csv            # 3,774 rows, 1025 cols
-│       ├── aromatase_cdk_graphonly_fp.csv       # 3,774 rows, 1025 cols
-│       ├── aromatase_estate_fp.csv             # 3,774 rows, 80 cols
-│       ├── aromatase_atompairs2d_fp.csv        # 3,774 rows, 781 cols
-│       ├── aromatase_substructure_count_fp.csv # 3,774 rows, 308 cols
-│       ├── aromatase_klekota_roth_count_fp.csv # 3,774 rows, 4861 cols
-│       └── aromatase_atompairs2d_count_fp.csv  # 3,774 rows, 781 cols
+│   │   ├── aromatase_bioactivity_clean.csv              # 3,774 rows, 19 cols
+│   │   └── aromatase_bioactivity_curated.csv            # 3,774 rows, 19 cols
+│   ├── fingerprints/                                    # Raw fingerprints (12 files)
+│   ├── fingerprints_filtered/                           # After near-constant removal (12 files)
+│   ├── fingerprints_decorrelated/                       # After collinearity removal (12 files)
+│   ├── splits/                                          # Train/test splits (48 files)
+│   ├── models/                                          # 07 regression results
+│   ├── models_decorrelated/                             # 07b regression results
+│   ├── models_classification/                           # 08c classification (default mode)
+│   ├── models_classification_balanced/                  # 08c classification (balanced mode)
+│   ├── models_classification_zips/                      # 08c per-model zip files
+│   ├── models_classification_decorrelated/              # 08d classification (default mode)
+│   ├── models_classification_balanced_decorrelated/     # 08d classification (balanced mode)
+│   └── models_classification_decorrelated_zips/         # 08d per-model zip files
 ```
 
 ## Data Pipeline
@@ -74,118 +93,145 @@ aromatase/
 
 - Exploratory data analysis of the cleaned bioactivity dataset
 
-### 4a. MACCS Fingerprints (`scripts/04_compute_maccs_fp.py`)
+### 4. Fingerprint Computation (12 fingerprint types)
 
-- Computes 166-bit MACCS structural keys using RDKit
-- Each bit represents a specific structural feature (e.g., aromatic ring, nitrogen in ring, ester group)
-- Outputs:
-  - `data/processed/aromatase_bioactivity_curated.csv` — base bioactivity data (19 columns)
-  - `data/fingerprints/aromatase_maccs_fp.csv` — `molecule_chembl_id` + 166 MACCS bits
+See individual script descriptions below for details on each fingerprint type.
 
-### 4b. PubChem Fingerprints (`scripts/04_compute_pubchem_fp.py`)
+### 5. Near-Constant Feature Removal (`scripts/05_remove_near_constant_fp.py`)
 
-- Computes 881-bit PubChem substructure fingerprints using PaDEL-Descriptor in **batch SMILES mode**
-- Writes a `.smi` file (SMILES + molecule ID) and passes it to PaDEL (~91ms/molecule)
-- 881 bits across 7 sections: element counts, ring counts, atom pairs, atom environments, SMARTS substructures
-- Cross-validated against per-molecule PaDEL: **exact match** on all 881 bits (5/5 test molecules)
-- Output: `data/fingerprints/aromatase_pubchem_fp.csv` — `molecule_chembl_id` + 881 PubChem bits
+- Removes columns with SD < 0.1 from each fingerprint CSV
+- Input: `data/fingerprints/` → Output: `data/fingerprints_filtered/`
+- Reduces total features from ~15,000 to 4,897
 
-> **Note**: An earlier version used SDF input, which caused 3-6 bit differences in Section 2 (ring count bits 115-262) due to aromaticity perception differences in RDKit's SDF writer vs CDK's SMILES parser. Switching to `.smi` input eliminated these discrepancies entirely.
+### 5b. Collinear Feature Removal (`scripts/05b_remove_collinear_fp.py`)
 
-### 4c. SubstructureFP (`scripts/04_compute_substructure_fp.py`)
+- Computes Pearson intercorrelation matrix for each filtered fingerprint
+- Greedy removal of features with |r| >= 0.90 (removes the feature involved in most correlated pairs first)
+- Input: `data/fingerprints_filtered/` → Output: `data/fingerprints_decorrelated/`
+- **Total reduction: 4,897 → 4,213 features (684 removed, 14%)**
 
-- Computes 307-bit functional group fingerprints using PaDEL-Descriptor in **batch SMILES mode**
-- Uses CDK's Inte:Ligand classification (307 SMARTS patterns covering amines, ketones, lactams, heterocycles, etc.)
-- Generates a custom `descriptors.xml` at runtime to enable only SubstructureFingerprinter
-- ~22 ms/mol (~76s for full dataset)
-- Cross-validated against per-molecule PaDEL: **exact match** on all 307 bits (5/5 test molecules)
-- Output: `data/fingerprints/aromatase_substructure_fp.csv` — `molecule_chembl_id` + 307 SubFP bits
+| Fingerprint | Before | After | Removed | % |
+|---|---:|---:|---:|---:|
+| pubchem | 439 | 245 | 194 | 44% |
+| klekota_roth_count | 515 | 376 | 139 | 27% |
+| cdk_graphonly | 775 | 667 | 108 | 14% |
+| klekota_roth | 439 | 339 | 100 | 23% |
+| atompairs2d_count | 226 | 183 | 43 | 19% |
+| atompairs2d | 183 | 142 | 41 | 22% |
+| maccs | 133 | 111 | 22 | 17% |
+| cdk_ext | 1002 | 992 | 10 | 1% |
+| substructure_count | 70 | 61 | 9 | 13% |
+| cdk | 1020 | 1012 | 8 | <1% |
+| substructure | 65 | 57 | 8 | 12% |
+| estate | 30 | 28 | 2 | 7% |
 
-### 4d. Klekota-Roth Fingerprints (`scripts/04_compute_klekota_roth_fp.py`)
+### 6. Train/Test Splitting (`scripts/06_split_data.py`)
 
-- Computes 4860-bit Klekota-Roth substructure fingerprints using PaDEL-Descriptor in **batch SMILES mode**
-- Uses CDK's KlekotaRothFingerprinter (4860 SMARTS patterns defined by Klekota & Roth, 2008)
-- Generates a custom `descriptors.xml` at runtime to enable only KlekotaRothFingerprinter
-- ~187 ms/mol (~637s for full dataset with multithreading, `threads=-1`)
-- Cross-validated against per-molecule PaDEL: **exact match** on all 4860 bits (5/5 test molecules)
-- Output: `data/fingerprints/aromatase_klekota_roth_fp.csv` — `molecule_chembl_id` + 4860 KRFP bits
-- Bit density: avg 45.8/4860 bits ON (0.9%), range 1-198
+- Reads from `data/fingerprints_decorrelated/`
+- Two split strategies (both at molecule level to prevent data leakage):
+  1. **Random split** — 80/20 with seed=42
+  2. **Kennard-Stone split** — maximizes chemical diversity in training set
+- Output: `data/splits/` (48 files: 12 FPs × 2 strategies × train/test)
 
-### 4e. CDK Fingerprinter (`scripts/04_compute_cdk_fp.py`)
+### 7. Regression Model Building
 
-- Computes 1024-bit CDK hashed fingerprints using PaDEL-Descriptor in **batch SMILES mode**
-- Uses CDK's default Fingerprinter (path-based hashed fingerprint, Daylight-type)
-- ~5 ms/mol (~17s for full dataset with multithreading)
-- Cross-validated against per-molecule PaDEL: **exact match** on all 1024 bits (3/3 test molecules)
-- Output: `data/fingerprints/aromatase_cdk_fp.csv` — `molecule_chembl_id` + 1024 FP bits
-- Bit density: avg 251.0/1024 bits ON (24.5%)
+**07 — Original fingerprints** (`scripts/07_build_models.py`)
+- 16 regression models × 12 FPs × 2 splits = 384 fits
+- Results: `data/models/` (24 test CSV files, 14-16 models each)
 
-### 4f. CDK Extended Fingerprinter (`scripts/04_compute_cdk_ext_fp.py`)
+**07b — Decorrelated fingerprints** (`scripts/07b_build_models.py`)
+- Same 16 models on decorrelated data
+- Results: `data/models_decorrelated/` (24 test CSV files, 16 models each)
 
-- Computes 1024-bit CDK Extended fingerprints using PaDEL-Descriptor in **batch SMILES mode**
-- Extends the default CDK Fingerprinter with additional ring and atom-type features
-- ~8 ms/mol (~28s for full dataset with multithreading)
-- Cross-validated against per-molecule PaDEL: **exact match** on all 1024 bits (3/3 test molecules)
-- Output: `data/fingerprints/aromatase_cdk_ext_fp.csv` — `molecule_chembl_id` + 1024 ExtFP bits
-- Bit density: avg 265.0/1024 bits ON (25.9%)
+**Regression algorithms:**
+1. Ridge Regression
+2. Lasso Regression
+3. ElasticNet
+4. k-Nearest Neighbors
+5. SVR (RBF)
+6. SVR (Linear)
+7. Decision Tree
+8. Random Forest (500 trees)
+9. Extra Trees (500 trees)
+10. Gradient Boosting (100 trees)
+11. XGBoost (500 trees)
+12. AdaBoost (500 trees)
+13. MLP Regressor (128-64)
+14. Gaussian Process
+15. Bayesian Ridge
+16. PLS Regression
 
-### 4g. CDK GraphOnly Fingerprinter (`scripts/04_compute_cdk_graphonly_fp.py`)
+**CLI usage:**
+```bash
+python scripts/07_build_models.py --fp maccs --split random        # single FP
+python scripts/07_build_models.py --fp cdk --split kennard_stone   # KS split
+python scripts/07b_build_models.py --fp pubchem --split random     # decorrelated
+```
 
-- Computes 1024-bit CDK GraphOnly fingerprints using PaDEL-Descriptor in **batch SMILES mode**
-- Uses only graph topology (ignores element types), capturing pure connectivity patterns
-- ~4 ms/mol (~14s for full dataset with multithreading)
-- Cross-validated against per-molecule PaDEL: **exact match** on all 1024 bits (3/3 test molecules)
-- Output: `data/fingerprints/aromatase_cdk_graphonly_fp.csv` — `molecule_chembl_id` + 1024 GraphFP bits
-- Bit density: avg 126.3/1024 bits ON (12.3%)
+### 8. Classification Model Building
 
-### 4h. E-State Fingerprinter (`scripts/04_compute_estate_fp.py`)
+**Task:** Predict 3-class bioactivity (active: pChEMBL > 7, intermediate: 6–7, inactive: < 6)
 
-- Computes 79-bit E-State fingerprints using PaDEL-Descriptor in **batch SMILES mode**
-- Based on electrotopological state atom types (Hall & Kier)
-- ~6 ms/mol (~22s for full dataset with multithreading)
-- Cross-validated against per-molecule PaDEL: **exact match** on all 79 bits (3/3 test molecules)
-- Output: `data/fingerprints/aromatase_estate_fp.csv` — `molecule_chembl_id` + 79 EStateFP bits
-- Bit density: avg 8.6/79 bits ON (10.9%)
+**08c — Original fingerprints** (`scripts/08c_build_classification_models.py`)
+- 14 classification models × 12 FPs × default + balanced modes
+- Results: `data/models_classification/` + `data/models_classification_balanced/`
+- Per-model zips: `data/models_classification_zips/` (252 files)
 
-### 4i. AtomPairs2D Fingerprinter (`scripts/04_compute_atompairs2d_fp.py`)
+**08d — Decorrelated fingerprints** (`scripts/08d_build_classification_models.py`)
+- Same models on decorrelated data
+- Results: `data/models_classification_decorrelated/` + `data/models_classification_balanced_decorrelated/`
+- Per-model zips: `data/models_classification_decorrelated_zips/` (252 files)
 
-- Computes 780-bit AtomPairs2D fingerprints using PaDEL-Descriptor in **batch SMILES mode**
-- Encodes presence of atom-type pairs at various topological distances
-- ~6 ms/mol (~21s for full dataset with multithreading)
-- Cross-validated against per-molecule PaDEL: **exact match** on all 780 bits (3/3 test molecules)
-- Output: `data/fingerprints/aromatase_atompairs2d_fp.csv` — `molecule_chembl_id` + 780 AD2D bits
-- Bit density: avg 36.5/780 bits ON (4.7%)
+**Classification algorithms (14 models):**
 
-### 4j. Substructure Count (`scripts/04_compute_substructure_count_fp.py`)
+*Tier 1 — Fast (support class_weight):*
+1. Ridge Classifier
+2. Logistic Regression (L1)
+3. Logistic Regression (ElasticNet)
+4. Decision Tree
 
-- Computes 307 frequency counts using PaDEL-Descriptor in **batch SMILES mode**
-- Same 307 SMARTS patterns as SubstructureFP but records occurrence count instead of binary presence
-- ~14 ms/mol (~46s for full dataset with multithreading)
-- Cross-validated against per-molecule PaDEL: **exact match** on all 307 counts (3/3 test molecules)
-- Output: `data/fingerprints/aromatase_substructure_count_fp.csv` — `molecule_chembl_id` + 307 SubFPC counts
+*Tier 1 — Fast (no class_weight):*
+5. k-Nearest Neighbors
+6. Gaussian Naive Bayes
+7. Linear Discriminant Analysis
 
-### 4k. Klekota-Roth Count (`scripts/04_compute_klekota_roth_count_fp.py`)
+*Tier 2 — Medium:*
+8. Gradient Boosting (100 trees)
+9. XGBoost (500 trees)
+10. AdaBoost (500 trees)
+11. MLP Classifier (128-64)
 
-- Computes 4860 frequency counts using PaDEL-Descriptor in **batch SMILES mode**
-- Same 4860 SMARTS patterns as KRFP but records occurrence count instead of binary presence
-- ~206 ms/mol (~701s for full dataset with multithreading)
-- Cross-validated against per-molecule PaDEL: **exact match** on all 4860 counts (3/3 test molecules)
-- Output: `data/fingerprints/aromatase_klekota_roth_count_fp.csv` — `molecule_chembl_id` + 4860 KRFPC counts
+*Tier 3 — Slow (support class_weight):*
+12. SVC (RBF)
+13. SVC (Linear)
+14. Random Forest (500 trees)
 
-### 4l. AtomPairs2D Count (`scripts/04_compute_atompairs2d_count_fp.py`)
+**Two training modes:**
+- **Default**: All 14 models without class weighting
+- **Balanced**: 7 models with `class_weight='balanced'` (Ridge, LogReg ×2, SVC ×2, DecTree, RF)
 
-- Computes 780 frequency counts using PaDEL-Descriptor in **batch SMILES mode**
-- Same atom-pair types as AtomPairs2D but records frequency count instead of binary presence
-- Column names are descriptive (e.g., `APC2D1_C_C`, `APC2D1_C_N`) rather than numeric indices
-- ~5 ms/mol (~16s for full dataset with multithreading)
-- Cross-validated against per-molecule PaDEL: **exact match** on all 780 counts (3/3 test molecules)
-- Output: `data/fingerprints/aromatase_atompairs2d_count_fp.csv` — `molecule_chembl_id` + 780 APC2D counts
+**CLI usage:**
+```bash
+python scripts/08c_build_classification_models.py                        # all
+python scripts/08c_build_classification_models.py --fp maccs --tier 1    # fast only
+python scripts/08c_build_classification_models.py --tier 2 --mode balanced
+python scripts/08d_build_classification_models.py --fp pubchem --tier 1-2
+```
 
-### 4m. ECFP4 Fingerprints (`scripts/04_compute_ecfp4.py`)
+## Colab Notebooks
 
-- Computes 1024-bit Morgan/ECFP4 circular fingerprints (radius=2) using RDKit
-- Not included in final output (replaced by PubChem FP) but script is available
-- Output: `data/fingerprints/aromatase_ecfp4_fp.csv` (if run)
+All notebooks clone from `https://github.com/dataprofessor/aromatase.git` and use GPU acceleration via cuML + XGBoost CUDA.
+
+| Notebook | Task | Data | Notes |
+|---|---|---|---|
+| `07_build_models_colab.ipynb` | Regression | Original FPs | 14 models, GPU |
+| `07b_build_models_decorrelated_colab.ipynb` | Regression | Decorrelated FPs | 14 models, GPU |
+| `08_build_classification_models_colab.ipynb` | Classification | Original FPs | 14 models, default+balanced |
+| `08b_build_classification_models_decorrelated_colab.ipynb` | Classification | Decorrelated FPs | 14 models, default+balanced |
+| `08c_build_classification_models_colab.ipynb` | Classification | Original FPs | 3-tier with incremental zip downloads |
+| `08d_build_classification_models_decorrelated_colab.ipynb` | Classification | Decorrelated FPs | 3-tier with incremental zip downloads |
+
+All notebooks include a final cell that zips results and triggers `google.colab.files.download()`.
 
 ## Output Files
 
@@ -240,32 +286,62 @@ All fingerprint CSVs use `molecule_chembl_id` as the join key to link back to bi
 | pIC50 | 47 |
 | **Total** | **3,774** |
 
+### Classification Class Definitions
+
+| Class | pChEMBL Range | IC50 Range | Count (train) |
+|---|---|---|---:|
+| Active | > 7 | < 100 nM | 893 (33.2%) |
+| Intermediate | 6–7 | 100 nM – 1 μM | 716 (26.6%) |
+| Inactive | < 6 | > 1 μM | 1,082 (40.2%) |
+
 ## Dependencies
 
 - **Python 3.9+**
 - **RDKit** (`pip install rdkit-pypi`) — SMILES parsing, MACCS keys, ECFP4
 - **PaDEL-Descriptor** (`pip install padelpy`) — PubChem FP, SubstructureFP, Klekota-Roth, CDK FP, CDK Extended, CDK GraphOnly, E-State, AtomPairs2D (requires Java runtime)
-- Standard library: `csv`, `json`, `urllib`, `math`, `time`, `collections`
+- **scikit-learn** — All ML models (Ridge, Lasso, SVM, RF, etc.)
+- **XGBoost** (`pip install xgboost`) — Gradient boosted trees
+- **NumPy** — Array operations, correlation matrices
+- Standard library: `csv`, `json`, `urllib`, `math`, `time`, `collections`, `zipfile`
+
+### Colab-specific dependencies (installed at runtime)
+- **cuML** (`cuml-cu12`) — GPU-accelerated sklearn-compatible models
+- **cuDF** (`cudf-cu12`) — GPU DataFrame operations
+- **tqdm** — Progress bars
 
 ## Reproducibility
 
 Run scripts from anywhere (paths are relative to script location):
 
 ```bash
-python scripts/01_fetch_aromatase_bioactivity.py   # ~2 min (API calls)
-python scripts/02_clean_aromatase_bioactivity.py   # ~4 min (API calls for InChIKeys)
-python scripts/04_compute_maccs_fp.py              # ~5 sec
-python scripts/04_compute_pubchem_fp.py            # ~5 min (PaDEL batch)
-python scripts/04_compute_substructure_fp.py       # ~76 sec (PaDEL batch)
-python scripts/04_compute_klekota_roth_fp.py       # ~11 min (PaDEL batch, multithreaded)
-python scripts/04_compute_cdk_fp.py                # ~17 sec (PaDEL batch, multithreaded)
-python scripts/04_compute_cdk_ext_fp.py            # ~28 sec (PaDEL batch, multithreaded)
-python scripts/04_compute_cdk_graphonly_fp.py       # ~14 sec (PaDEL batch, multithreaded)
-python scripts/04_compute_estate_fp.py             # ~22 sec (PaDEL batch, multithreaded)
-python scripts/04_compute_atompairs2d_fp.py        # ~21 sec (PaDEL batch, multithreaded)
-python scripts/04_compute_substructure_count_fp.py  # ~46 sec (PaDEL batch, multithreaded)
-python scripts/04_compute_klekota_roth_count_fp.py  # ~12 min (PaDEL batch, multithreaded)
-python scripts/04_compute_atompairs2d_count_fp.py   # ~16 sec (PaDEL batch, multithreaded)
+# Data pipeline
+python scripts/01_fetch_aromatase_bioactivity.py         # ~2 min (API calls)
+python scripts/02_clean_aromatase_bioactivity.py         # ~4 min (API calls for InChIKeys)
+python scripts/04_compute_maccs_fp.py                    # ~5 sec
+python scripts/04_compute_pubchem_fp.py                  # ~5 min (PaDEL batch)
+python scripts/04_compute_substructure_fp.py             # ~76 sec (PaDEL batch)
+python scripts/04_compute_klekota_roth_fp.py             # ~11 min (PaDEL batch, multithreaded)
+python scripts/04_compute_cdk_fp.py                      # ~17 sec
+python scripts/04_compute_cdk_ext_fp.py                  # ~28 sec
+python scripts/04_compute_cdk_graphonly_fp.py            # ~14 sec
+python scripts/04_compute_estate_fp.py                   # ~22 sec
+python scripts/04_compute_atompairs2d_fp.py              # ~21 sec
+python scripts/04_compute_substructure_count_fp.py       # ~46 sec
+python scripts/04_compute_klekota_roth_count_fp.py       # ~12 min
+python scripts/04_compute_atompairs2d_count_fp.py        # ~16 sec
+
+# Feature selection
+python scripts/05_remove_near_constant_fp.py             # ~10 sec
+python scripts/05b_remove_collinear_fp.py                # ~30 sec
+
+# Splitting
+python scripts/06_split_data.py                          # ~5 sec
+
+# Model building (local CLI)
+python scripts/07_build_models.py --fp maccs --split random
+python scripts/07b_build_models.py --fp maccs --split random
+python scripts/08c_build_classification_models.py --tier 1
+python scripts/08d_build_classification_models.py --tier 1
 ```
 
 ## Notes for Future Native Python Implementation
@@ -298,17 +374,63 @@ Working set has already been initialized!
 
 The error originates in cuML's C++ SMO solver (`SmoSolver::Solve` → `KernelCache::InitWorkingSet`). Likely a cuML bug with the working set initialization being called twice on linear SVR. Affects count-based fingerprints more frequently than binary fingerprints.
 
-**Workaround**: The notebook's error handling (`try/except`) catches and skips this model/fingerprint combination. Results for other fingerprints and SVR (RBF) are unaffected.
+**Workaround**: The notebook's error handling (`try/except`) catches and skips this model/fingerprint combination. The CLI scripts (`07_build_models.py`) use sklearn's SVR which works without issue. Results for other fingerprints and SVR (RBF) are unaffected.
 
-**Future fix options**:
-1. Fall back to sklearn's `SVR(kernel='linear')` for fingerprints with >400 features
-2. Replace `cuSVR(kernel='linear')` with `cuml.linear_model.LinearSVR` (different solver, avoids the SMO path)
-3. Wait for cuML upstream fix (file issue at github.com/rapidsai/cuml)
+**Resolution**: The missing SVR (Linear) results for these 4 combinations were filled using sklearn locally via the CLI scripts.
+
+### XGBoost + sklearn 1.6 tag incompatibility
+
+**Error**: `'super' object has no attribute '__sklearn_tags__'` when using `cross_val_predict()` or `clone()` with XGBoost 1.6.x and sklearn >= 1.6.
+
+**Context**: sklearn 1.6 introduced a new `__sklearn_tags__` protocol that XGBoost 1.x doesn't implement.
+
+**Workaround**: The CLI scripts use manual CV loops for XGBoost (bypass `cross_val_predict`/`clone`):
+```python
+if name == "XGBoost":
+    y_pred_cv = np.zeros_like(y_train)
+    for tr_idx, val_idx in cv.split(X_train, y_train):
+        m_cv = type(model)(**model.get_params())
+        m_cv.fit(X_train[tr_idx], y_train[tr_idx])
+        y_pred_cv[val_idx] = m_cv.predict(X_train[val_idx])
+```
+
+This issue does not affect Colab notebooks (which use cuML + compatible XGBoost versions).
+
+### XGBoost libomp architecture mismatch (macOS)
+
+**Error**: `XGBoost Library (libxgboost.dylib) could not be loaded` — needs x86_64 `libomp.dylib` but only arm64 available via Homebrew.
+
+**Context**: When Python is x86_64 (miniconda under Rosetta) but brew-installed libomp is arm64.
+
+**Workaround**: Use XGBoost 1.6.1 (`pip install xgboost==1.6.1`) which bundles its own compatible libomp. XGBoost 2.x requires a matching-architecture libomp. This is a local dev environment issue only — does not affect Colab.
+
+## Model Results Summary
+
+### Regression (07/07b) — Test R² (top performers)
+
+Models trained on 3,774 molecules, 80/20 split, 10-fold CV.
+
+Best models consistently across fingerprints:
+- **Random Forest** and **XGBoost**: R² ≈ 0.45–0.55
+- **Gradient Boosting**: R² ≈ 0.40–0.50
+- **k-Nearest Neighbors**: R² ≈ 0.35–0.45
+
+### Classification (08c/08d) — Test Balanced Accuracy (top performers)
+
+3-class prediction (active/intermediate/inactive):
+- **Random Forest** (balanced): BalAcc ≈ 0.63–0.67
+- **XGBoost**: BalAcc ≈ 0.58–0.65
+- **MLP Classifier**: BalAcc ≈ 0.63–0.66
+- **SVC (RBF)**: BalAcc ≈ 0.59–0.65
+
+Best fingerprints: MACCS, PubChem, CDK (hashed path-based fingerprints capture relevant structural features for aromatase inhibition).
 
 ## To-Do
 
-1. **Run regression/classification models with collinear-removed data** — Re-run both the regression (`07_build_models_colab.ipynb`) and classification (`08_build_classification_models_colab.ipynb`) notebooks using the fingerprint data after removing highly collinear features. Compare performance to the full-feature models.
+1. **Feature importance analysis** — Identify the most predictive fingerprint bits/features for aromatase inhibition. Use permutation importance, SHAP values, or model-native feature importances (Random Forest, XGBoost) to rank descriptors across fingerprint types.
 
-2. **Feature importance analysis** — Identify the most predictive fingerprint bits/features for aromatase inhibition. Use permutation importance, SHAP values, or model-native feature importances (Random Forest, XGBoost) to rank descriptors across fingerprint types.
+2. **Statistical comparison of bioactivity classes** — Perform statistical tests (e.g., Kruskal-Wallis, Mann-Whitney U with Bonferroni correction) to compare molecular descriptor distributions across the 3 bioactivity classes (active, intermediate, inactive). Identify which descriptors significantly differentiate the classes.
 
-3. **Statistical comparison of bioactivity classes** — Perform statistical tests (e.g., Kruskal-Wallis, Mann-Whitney U with Bonferroni correction) to compare molecular descriptor distributions across the 3 bioactivity classes (active, intermediate, inactive). Identify which descriptors significantly differentiate the classes.
+3. **Applicability domain analysis** — Define the chemical space coverage of the training set and flag test predictions that fall outside this domain.
+
+4. **Consensus/ensemble models** — Combine predictions from the top 3-5 models per fingerprint type to potentially improve robustness.
